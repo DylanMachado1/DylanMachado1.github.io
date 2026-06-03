@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hotel Eldorado Salto - Demo Final</title>
+  <meta name="description" content="Demo profesional para Hotel Eldorado Salto, Uruguay. Reservas, habitaciones, servicios, galería y ubicación.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="logo" href="#inicio" aria-label="Hotel Eldorado">
+      <span class="monogram">HE</span>
+      <span>
+        <small>Hotel</small>
+        <strong>Eldorado</strong>
+        <em>Salto · Uruguay</em>
+      </span>
+    </a>
+    <nav class="desktop-nav" aria-label="Principal">
+      <a class="active" href="#inicio">Inicio</a>
+      <a href="#hotel">El hotel</a>
+      <a href="#habitaciones">Habitaciones</a>
+      <a href="#servicios">Servicios</a>
+      <a href="#galeria">Galería</a>
+      <a href="#ubicacion">Ubicación</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+    <a class="reserve-btn" href="https://api.whatsapp.com/send?phone=59898414641&text=Hola%20Hotel%20Eldorado,%20quiero%20consultar%20disponibilidad" target="_blank" rel="noreferrer">Reservar ahora</a>
+  </header>
+
+  <main id="inicio">
+    <section class="hero">
+      <div class="hero-slide">
+        <img src="https://eldoradosalto.com/wp-content/uploads/2020/03/eldoradocolor.jpg" alt="Fachada del Hotel Eldorado">
+      </div>
+      <button class="arrow arrow-left" type="button" aria-label="Anterior">‹</button>
+      <button class="arrow arrow-right" type="button" aria-label="Siguiente">›</button>
+      <div class="hero-copy">
+        <p>Bienvenido al</p>
+        <h1>Hotel Eldorado</h1>
+        <span>Tu lugar de descanso<br>en el corazón de Salto</span>
+        <a href="#hotel">Descubrir más</a>
+      </div>
+      <div class="dots" aria-hidden="true">
+        <span></span>
+        <span></span>
+      </div>
+    </section>
+
+    <section class="booking-bar" aria-label="Reservá tu estadía">
+      <h2>Reservá tu estadía</h2>
+      <label>
+        <span>Fecha de entrada</span>
+        <input id="arrival" type="text" aria-label="Fecha de entrada" placeholder="Fecha de entrada" onfocus="this.type='date'">
+      </label>
+      <label>
+        <span>Fecha de salida</span>
+        <input id="departure" type="text" aria-label="Fecha de salida" placeholder="Fecha de salida" onfocus="this.type='date'">
+      </label>
+      <label>
+        <span>Huéspedes</span>
+        <select id="guests" aria-label="Huéspedes">
+          <option>1 huésped</option>
+          <option>2 huéspedes</option>
+          <option>3 huéspedes</option>
+          <option>4-5 huéspedes</option>
+        </select>
+      </label>
+      <label>
+        <span>Habitación</span>
+        <select id="roomType" aria-label="Tipo de habitación">
+          <option value="Single - desde $2.420">Single - desde $2.420</option>
+          <option value="Single Premium - desde $2.950">Single Premium - desde $2.950</option>
+          <option value="Doble Matrimonial - desde $2.860">Doble Matrimonial - desde $2.860</option>
+          <option value="Doble 2 Camas - desde $2.860">Doble 2 Camas - desde $2.860</option>
+          <option value="Doble Matrimonial Premium - desde $3.600">Doble Matrimonial Premium - desde $3.600</option>
+          <option value="Doble Premium Dos Camas - desde $3.600">Doble Premium Dos Camas - desde $3.600</option>
+          <option value="Triple - desde $3.600">Triple - desde $3.600</option>
+          <option value="Apartamento 4 personas - desde $4.650">Apartamento 4 personas - desde $4.650</option>
+        </select>
+      </label>
+      <a id="bookingSubmit" href="https://api.whatsapp.com/send?phone=59898414641&text=Hola%20Hotel%20Eldorado,%20quiero%20consultar%20disponibilidad%20para%20una%20estad%C3%ADa" target="_blank" rel="noreferrer">Consultar disponibilidad</a>
+    </section>
+
+    <section class="services" id="servicios" aria-label="Servicios del hotel">
+      <article>
+        <span class="service-icon">☕</span>
+        <h3>Desayuno buffet</h3>
+        <p>Incluido todos los días</p>
+      </article>
+      <article>
+        <span class="service-icon">⌁</span>
+        <h3>Wi-Fi gratis</h3>
+        <p>En todo el hotel</p>
+      </article>
+      <article>
+        <span class="service-icon">▣</span>
+        <h3>Estacionamiento</h3>
+        <p>Gratuito sujeto a disponibilidad</p>
+      </article>
+      <article>
+        <span class="service-icon">❄</span>
+        <h3>Aire acondicionado</h3>
+        <p>En todas las habitaciones</p>
+      </article>
+      <article>
+        <span class="service-icon">♢</span>
+        <h3>Caja fuerte</h3>
+        <p>Para tu mayor seguridad</p>
+      </article>
+    </section>
+
+    <section class="intro" id="hotel">
+      <p class="kicker">Confort para vos</p>
+      <h2>Nuestras Habitaciones</h2>
+    </section>
+
+    <section class="rooms" id="habitaciones">
+      <article class="room-card">
+        <img src="https://eldoradosalto.com/wp-content/uploads/2020/03/IMG_20250420_125309-600x400.jpg" alt="Habitación simple del Hotel Eldorado">
+        <div>
+          <h3>Simple</h3>
+          <p>Ideal para viajes de negocios o escapadas.</p>
+          <strong class="price">Desde $2.420</strong>
+          <ul>
+            <li>1 huésped</li>
+            <li>1 cama</li>
+          </ul>
+        </div>
+      </article>
+      <article class="room-card">
+        <img src="https://eldoradosalto.com/wp-content/uploads/2020/03/59-600x400.jpg" alt="Habitación doble del Hotel Eldorado">
+        <div>
+          <h3>Doble</h3>
+          <p>Confort y descanso para dos personas.</p>
+          <strong class="price">Desde $2.860</strong>
+          <ul>
+            <li>2 huéspedes</li>
+            <li>1 cama doble</li>
+          </ul>
+        </div>
+      </article>
+      <article class="room-card">
+        <img src="https://eldoradosalto.com/wp-content/uploads/2020/03/WhatsApp-Image-2025-09-15-at-20.46.40-600x400.jpeg" alt="Habitación triple del Hotel Eldorado">
+        <div>
+          <h3>Triple</h3>
+          <p>Espacio ideal para familias o amigos.</p>
+          <strong class="price">Desde $3.600</strong>
+          <ul>
+            <li>3 huéspedes</li>
+            <li>3 camas</li>
+          </ul>
+        </div>
+      </article>
+      <article class="room-card">
+        <img src="https://eldoradosalto.com/wp-content/uploads/2020/03/IMG_20250420_132337-600x400.jpg" alt="Apartamento del Hotel Eldorado">
+        <div>
+          <h3>Apartamentos</h3>
+          <p>Ambientes amplios con todo lo que necesitás.</p>
+          <strong class="price">Desde $4.650</strong>
+          <ul>
+            <li>4-5 huéspedes</li>
+            <li>Múltiples camas</li>
+          </ul>
+        </div>
+      </article>
+    </section>
+
+    <section class="rates" aria-label="Tarifas por habitación">
+      <div class="rates-heading">
+        <p class="kicker">Tarifas de referencia</p>
+        <h2>Habitaciones y precios reales publicados</h2>
+        <p>Los valores son “desde” y la disponibilidad se confirma por contacto directo con el hotel.</p>
+      </div>
+      <div class="rates-table" role="table" aria-label="Listado de habitaciones y precios">
+        <div role="row">
+          <span role="cell">Single</span>
+          <strong role="cell">$2.420</strong>
+          <a role="cell" href="https://api.whatsapp.com/send?phone=59898414641&text=Hola%20Hotel%20Eldorado,%20quiero%20consultar%20por%20habitaci%C3%B3n%20Single" target="_blank" rel="noreferrer">Consultar</a>
+        </div>
+        <div role="row">
+          <span role="cell">Single Premium</span>
+          <strong role="cell">$2.950</strong>
+          <a role="cell" href="https://api.whatsapp.com/send?phone=59898414641&text=Hola%20Hotel%20Eldorado,%20quiero%20consultar%20por%20habitaci%C3%B3n%20Single%20Premium" target="_blank" rel="noreferrer">Consultar</a>
+        </div>
+        <div role="row">
+          <span role="cell">Doble Matrimonial</span>
+          <strong role="cell">$2.860</strong>
+          <a role="cell" href="https://api.whatsapp.com/send?phone=59898414641&text=Hola%20Hotel%20Eldorado,%20quiero%20consultar%20por%20Doble%20Matrimonial" target="_blank" rel="noreferrer">Consultar</a>
+        </div>
+        <div role="row">
+          <span role="cell">Doble 2 Camas</span>
+          <strong role="cell">$2.860</strong>
+          <a role="cell" href="https://api.whatsapp.com/send?phone=59898414641&text=Hola%20Hotel%20Eldorado,%20quiero%20consultar%20por%20Doble%202%20Camas" target="_blank" rel="noreferrer">Consultar</a>
+        </div>
+        <div role="row">
+          <span role="cell">Doble Matrimonial Premium</span>
+          <strong role="cell">$3.600</strong>
+          <a role="cell" href="https://api.whatsapp.com/send?phone=59898414641&text=Hola%20Hotel%20Eldorado,%20quiero%20consultar%20por%20Doble%20Matrimonial%20Premium" target="_blank" rel="noreferrer">Consultar</a>
+        </div>
+        <div role="row">
+          <span role="cell">Doble Premium Dos Camas</span>
+          <strong role="cell">$3.600</strong>
+          <a role="cell" href="https://api.whatsapp.com/send?phone=59898414641&text=Hola%20Hotel%20Eldorado,%20quiero%20consultar%20por%20Doble%20Premium%20Dos%20Camas" target="_blank" rel="noreferrer">Consultar</a>
+        </div>
+        <div role="row">
+          <span role="cell">Triple</span>
+          <strong role="cell">$3.600</strong>
+          <a role="cell" href="https://api.whatsapp.com/send?phone=59898414641&text=Hola%20Hotel%20Eldorado,%20quiero%20consultar%20por%20habitaci%C3%B3n%20Triple" target="_blank" rel="noreferrer">Consultar</a>
+        </div>
+        <div role="row">
+          <span role="cell">Apartamento 4 personas</span>
+          <strong role="cell">$4.650</strong>
+          <a role="cell" href="https://api.whatsapp.com/send?phone=59898414641&text=Hola%20Hotel%20Eldorado,%20quiero%20consultar%20por%20Apartamento%204%20personas" target="_blank" rel="noreferrer">Consultar</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="rooms-action">
+      <a href="https://api.whatsapp.com/send?phone=59898414641&text=Hola%20Hotel%20Eldorado,%20quiero%20consultar%20por%20habitaciones" target="_blank" rel="noreferrer">Ver todas las habitaciones</a>
+    </div>
+
+    <section class="gallery" id="galeria" aria-label="Galería del hotel">
+      <img src="https://eldoradosalto.com/wp-content/uploads/2020/07/20170502_201349-1024x576.jpg" alt="Recepción del Hotel Eldorado">
+      <img src="https://eldoradosalto.com/wp-content/uploads/2020/03/IMG_20250420_125709-900x600.jpg" alt="Habitación del Hotel Eldorado">
+      <div class="gallery-quote">
+        <p>Calidez, comodidad y la mejor ubicación en el centro de Salto</p>
+      </div>
+      <img src="https://eldoradosalto.com/wp-content/uploads/2020/03/60-900x600.jpg" alt="Habitación doble premium">
+      <img src="https://eldoradosalto.com/wp-content/uploads/2020/03/51-1024x683.jpg" alt="Habitación premium simple">
+    </section>
+
+    <section class="location" id="ubicacion">
+      <div class="location-copy">
+        <p class="kicker left">Ubicación privilegiada</p>
+        <h2>En pleno centro de Salto</h2>
+        <p>Estamos sobre Av. Sarandí 20, a pocas cuadras de Plaza Artigas y de la costanera.</p>
+        <a href="https://www.google.com/maps/place/Eldorado/@-31.3876086,-57.966788,16z/data=!4m2!3m1!1s0x95addd2c075a3b21:0x43fa2ad6b4124a96" target="_blank" rel="noreferrer">Cómo llegar</a>
+      </div>
+      <div class="nearby">
+        <article>
+          <span>⌂</span>
+          <p><strong>Plaza Artigas</strong>3 min. caminando</p>
+        </article>
+        <article>
+          <span>♨</span>
+          <p><strong>Costanera de Salto</strong>5 min. caminando</p>
+        </article>
+        <article>
+          <span>▤</span>
+          <p><strong>Terminal de Ómnibus</strong>7 min. en auto</p>
+        </article>
+      </div>
+      <a class="map" href="https://www.google.com/maps/place/Eldorado/@-31.3876086,-57.966788,16z/data=!4m2!3m1!1s0x95addd2c075a3b21:0x43fa2ad6b4124a96" target="_blank" rel="noreferrer">
+        <img src="https://eldoradosalto.com/wp-content/uploads/2020/02/mapa.jpg" alt="Mapa de ubicación Hotel Eldorado">
+      </a>
+    </section>
+  </main>
+
+  <footer class="footer" id="contacto">
+    <div class="footer-grid">
+      <div>
+        <a class="logo footer-logo" href="#inicio" aria-label="Hotel Eldorado">
+          <span class="monogram">HE</span>
+          <span>
+            <small>Hotel</small>
+            <strong>Eldorado</strong>
+            <em>Salto · Uruguay</em>
+          </span>
+        </a>
+        <p>Más de 50 años brindando hospitalidad y el mejor servicio a nuestros huéspedes.</p>
+        <div class="socials">
+          <a href="#" aria-label="Facebook">f</a>
+          <a href="#" aria-label="Instagram">◎</a>
+        </div>
+      </div>
+      <div>
+        <h3>Enlaces</h3>
+        <a href="#inicio">Inicio</a>
+        <a href="#hotel">El Hotel</a>
+        <a href="#habitaciones">Habitaciones</a>
+        <a href="#servicios">Servicios</a>
+        <a href="#galeria">Galería</a>
+        <a href="#ubicacion">Ubicación</a>
+      </div>
+      <div>
+        <h3>Servicios</h3>
+        <a href="#servicios">Desayuno Buffet</a>
+        <a href="#servicios">Wi-Fi Gratis</a>
+        <a href="#servicios">Estacionamiento</a>
+        <a href="#servicios">Aire Acondicionado</a>
+        <a href="#servicios">Caja Fuerte</a>
+      </div>
+      <div>
+        <h3>Contacto</h3>
+        <p>Av. Sarandí 20, Salto - Uruguay</p>
+        <a href="tel:59898414641">+598 98 41 46 41</a>
+        <a href="mailto:hoteleldorado@gmail.com">hoteleldorado@gmail.com</a>
+        <a class="footer-reserve" href="https://api.whatsapp.com/send?phone=59898414641&text=Hola%20Hotel%20Eldorado,%20quiero%20reservar" target="_blank" rel="noreferrer">Reservar ahora</a>
+      </div>
+    </div>
+    <div class="copyright">© 2026 Hotel Eldorado. Todos los derechos reservados.</div>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>
