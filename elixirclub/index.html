@@ -1,0 +1,1354 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Elixir Club UY | Perfumes importados</title>
+  <meta name="description" content="Demo web moderna para Elixir Club UY con catalogo, precios y compra online por WhatsApp.">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #090807;
+      --ink: #f8f1df;
+      --muted: #c9bd9d;
+      --gold: #d9aa55;
+      --gold-2: #f3d38a;
+      --line: rgba(248, 220, 158, .2);
+      --panel: rgba(20, 15, 12, .86);
+      --shadow: 0 28px 80px rgba(0, 0, 0, .46);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 76% 8%, rgba(217, 170, 85, .22), transparent 28rem),
+        radial-gradient(circle at 8% 20%, rgba(90, 128, 153, .16), transparent 23rem),
+        linear-gradient(145deg, #090807 0%, #15110e 48%, #080706 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      opacity: .12;
+      background-image:
+        linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+      background-size: 74px 74px;
+      mask-image: linear-gradient(to bottom, #000 0%, transparent 72%);
+    }
+
+    body.cart-open { overflow: hidden; }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    button, input { font: inherit; }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      min-height: 74px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 12px clamp(16px, 4vw, 58px);
+      border-bottom: 1px solid var(--line);
+      background: rgba(9, 8, 7, .78);
+      backdrop-filter: blur(18px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 46px;
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      border: 1px solid rgba(243, 211, 138, .72);
+      background: radial-gradient(circle at 50% 28%, rgba(243, 211, 138, .25), transparent 38%), #11100e;
+      color: var(--gold-2);
+      font-family: Georgia, serif;
+      font-size: 23px;
+      box-shadow: inset 0 0 0 4px rgba(217, 170, 85, .08);
+    }
+
+    .brand strong,
+    .brand span {
+      display: block;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .brand strong {
+      font-family: Georgia, serif;
+      font-size: 1.08rem;
+      letter-spacing: .16em;
+    }
+
+    .brand span {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: .74rem;
+      letter-spacing: .18em;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: clamp(12px, 2vw, 26px);
+      color: rgba(248, 241, 223, .77);
+      font-size: .9rem;
+    }
+
+    .nav a:not(.cta) { transition: color .2s ease; }
+    .nav a:not(.cta):hover { color: var(--gold-2); }
+
+    .cta,
+    .ghost,
+    .cart-button,
+    .product button,
+    .checkout,
+    .filter {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      border-radius: 999px;
+      padding: 0 18px;
+      border: 0;
+      cursor: pointer;
+      transition: transform .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+      white-space: nowrap;
+    }
+
+    .cta,
+    .checkout,
+    .product button {
+      color: #130e08;
+      background: linear-gradient(135deg, var(--gold-2), var(--gold));
+      font-weight: 900;
+      box-shadow: 0 12px 30px rgba(217, 170, 85, .22);
+    }
+
+    .ghost,
+    .cart-button,
+    .filter {
+      color: var(--ink);
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.045);
+    }
+
+    .cta:hover,
+    .ghost:hover,
+    .cart-button:hover,
+    .product button:hover,
+    .checkout:hover,
+    .filter:hover {
+      transform: translateY(-2px);
+    }
+
+    .cart-button {
+      position: relative;
+      width: 48px;
+      padding: 0;
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -7px;
+      right: -5px;
+      min-width: 21px;
+      height: 21px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      color: #120d08;
+      background: var(--gold-2);
+      font-size: .75rem;
+      font-weight: 900;
+    }
+
+    .hero {
+      min-height: calc(100svh - 74px);
+      display: grid;
+      grid-template-columns: minmax(0, .92fr) minmax(320px, 1.08fr);
+      align-items: center;
+      gap: clamp(26px, 5vw, 78px);
+      padding: clamp(30px, 5vw, 72px) clamp(16px, 5vw, 72px) 28px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--gold-2);
+      text-transform: uppercase;
+      letter-spacing: .15em;
+      font-size: .76rem;
+      font-weight: 900;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 34px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    h1 {
+      max-width: 760px;
+      margin: 18px 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(3rem, 7vw, 7rem);
+      line-height: .9;
+      letter-spacing: 0;
+    }
+
+    h1 span {
+      display: block;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(243, 211, 138, .9);
+    }
+
+    .hero p,
+    .section-head p,
+    .lead {
+      color: rgba(248, 241, 223, .74);
+      line-height: 1.65;
+    }
+
+    .hero p {
+      max-width: 620px;
+      margin: 0 0 26px;
+      font-size: clamp(1rem, 1.55vw, 1.2rem);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .trust-row {
+      max-width: 610px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .trust {
+      min-height: 86px;
+      padding: 15px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,255,255,.04);
+    }
+
+    .trust strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--gold-2);
+      font-size: 1.18rem;
+    }
+
+    .trust span {
+      color: var(--muted);
+      font-size: .84rem;
+      line-height: 1.35;
+    }
+
+    .showcase {
+      position: relative;
+      min-height: 620px;
+      display: grid;
+      place-items: center;
+    }
+
+    .hero-card {
+      width: min(100%, 570px);
+      min-height: 620px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(243, 211, 138, .25);
+      border-radius: 8px;
+      background: #15110f;
+      box-shadow: var(--shadow);
+      animation: floatCard 6s ease-in-out infinite;
+    }
+
+    @keyframes floatCard {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(115deg, transparent 0 38%, rgba(255,255,255,.2) 46%, transparent 56%),
+        linear-gradient(to top, rgba(8,7,6,.86), transparent 58%);
+      transform: translateX(-112%);
+      animation: sweep 5.8s ease-in-out infinite;
+    }
+
+    @keyframes sweep {
+      0%, 40% { transform: translateX(-112%); }
+      78%, 100% { transform: translateX(112%); }
+    }
+
+    .hero-card img {
+      width: 100%;
+      height: 620px;
+      object-fit: cover;
+      filter: saturate(1.04) contrast(1.04);
+      transform: scale(1.02);
+    }
+
+    .hero-caption {
+      position: absolute;
+      left: 30px;
+      right: 30px;
+      bottom: 30px;
+      z-index: 2;
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .hero-caption small {
+      display: block;
+      color: var(--gold-2);
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      font-weight: 900;
+      font-size: .72rem;
+    }
+
+    .hero-caption h2 {
+      margin: 7px 0 0;
+      font-family: Georgia, serif;
+      font-size: clamp(1.55rem, 3vw, 2.25rem);
+      letter-spacing: 0;
+    }
+
+    .price-pill {
+      padding: 12px 15px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--gold-2);
+      background: rgba(0,0,0,.36);
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .section {
+      padding: clamp(56px, 8vw, 108px) clamp(16px, 5vw, 72px);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 22px;
+      margin-bottom: 26px;
+    }
+
+    .section h2 {
+      margin: 0;
+      font-family: Georgia, serif;
+      font-size: clamp(2rem, 4.2vw, 4.3rem);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .section-head p {
+      max-width: 540px;
+      margin: 0;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .filter {
+      min-height: 38px;
+      padding: 0 14px;
+      color: rgba(248,241,223,.76);
+      font-size: .9rem;
+    }
+
+    .filter.active {
+      color: #130e08;
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--gold-2), var(--gold));
+      font-weight: 900;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .product {
+      min-height: 560px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid rgba(248, 220, 158, .18);
+      border-radius: 8px;
+      background: rgba(255,255,255,.035);
+      box-shadow: 0 18px 42px rgba(0,0,0,.22);
+      transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+    }
+
+    .product:hover {
+      transform: translateY(-7px);
+      border-color: rgba(243, 211, 138, .45);
+      box-shadow: 0 26px 60px rgba(0,0,0,.35);
+    }
+
+    .photo {
+      position: relative;
+      height: 360px;
+      overflow: hidden;
+      background: #171310;
+    }
+
+    .photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .6s ease, filter .6s ease;
+    }
+
+    .product:hover .photo img {
+      transform: scale(1.08);
+      filter: saturate(1.08) contrast(1.05);
+    }
+
+    .photo::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(9,8,7,.78), transparent 52%);
+      pointer-events: none;
+    }
+
+    .badge {
+      position: absolute;
+      left: 14px;
+      top: 14px;
+      z-index: 2;
+      min-height: 30px;
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 0 11px;
+      color: #120d08;
+      background: var(--gold-2);
+      font-size: .75rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .product-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 18px;
+    }
+
+    .product-info small {
+      color: var(--gold-2);
+      letter-spacing: .13em;
+      text-transform: uppercase;
+      font-weight: 900;
+      font-size: .68rem;
+    }
+
+    .product-info h3 {
+      margin: 8px 0 8px;
+      font-size: 1.22rem;
+      letter-spacing: 0;
+    }
+
+    .product-info p {
+      margin: 0 0 16px;
+      color: rgba(248,241,223,.68);
+      line-height: 1.45;
+      font-size: .92rem;
+    }
+
+    .buy-row {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .price {
+      color: var(--gold-2);
+      font-size: 1.2rem;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .product button {
+      min-height: 40px;
+      padding: 0 13px;
+      font-size: .88rem;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: minmax(0, .85fr) minmax(320px, 1.15fr);
+      gap: clamp(24px, 5vw, 70px);
+      align-items: center;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.012)),
+        #100d0b;
+      border-block: 1px solid var(--line);
+    }
+
+    .checkout-steps {
+      display: grid;
+      gap: 12px;
+    }
+
+    .step {
+      min-height: 96px;
+      display: grid;
+      grid-template-columns: 46px minmax(0, 1fr);
+      gap: 15px;
+      align-items: center;
+      padding: 17px;
+      border: 1px solid rgba(248, 220, 158, .2);
+      border-radius: 8px;
+      background: rgba(255,255,255,.04);
+    }
+
+    .step strong {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: var(--gold-2);
+      background: rgba(243, 211, 138, .12);
+    }
+
+    .step h3 {
+      margin: 0 0 4px;
+      font-size: 1rem;
+    }
+
+    .step p {
+      margin: 0;
+      color: rgba(248,241,223,.67);
+      line-height: 1.45;
+      font-size: .9rem;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 14px;
+      min-height: 560px;
+    }
+
+    .gallery-item {
+      position: relative;
+      min-height: 270px;
+      overflow: hidden;
+      border: 1px solid rgba(248, 220, 158, .18);
+      border-radius: 8px;
+      background: #15110f;
+    }
+
+    .gallery-item.large { grid-row: span 2; }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .65s ease;
+    }
+
+    .gallery-item:hover img { transform: scale(1.08); }
+
+    .gallery-item::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.75), transparent 58%);
+    }
+
+    .gallery-item span {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 17px;
+      z-index: 1;
+      font-weight: 950;
+      font-size: clamp(1.2rem, 2vw, 1.8rem);
+      line-height: 1.08;
+    }
+
+    .testimonials {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .quote {
+      min-height: 188px;
+      padding: 22px;
+      border: 1px solid rgba(248, 220, 158, .18);
+      border-radius: 8px;
+      background: rgba(255,255,255,.04);
+    }
+
+    .quote p {
+      margin: 0 0 18px;
+      color: rgba(248,241,223,.74);
+      line-height: 1.6;
+    }
+
+    .quote strong { color: var(--gold-2); }
+
+    .final-cta {
+      min-height: 420px;
+      display: grid;
+      place-items: center;
+      padding: clamp(56px, 8vw, 108px) 18px;
+      text-align: center;
+      border-top: 1px solid var(--line);
+      background:
+        linear-gradient(rgba(8,7,6,.78), rgba(8,7,6,.78)),
+        radial-gradient(circle at 50% 12%, rgba(217,170,85,.38), transparent 34rem),
+        #090807;
+    }
+
+    .final-cta h2 {
+      max-width: 900px;
+      margin: 0 auto 18px;
+      font-family: Georgia, serif;
+      font-size: clamp(2.15rem, 5.2vw, 5rem);
+      line-height: .98;
+      letter-spacing: 0;
+    }
+
+    .final-cta p {
+      max-width: 620px;
+      margin: 0 auto 26px;
+    }
+
+    .site-footer {
+      min-height: 86px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 22px clamp(16px, 5vw, 72px);
+      color: rgba(248,241,223,.56);
+      border-top: 1px solid rgba(248,220,158,.12);
+      font-size: .9rem;
+    }
+
+    .cart-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: none;
+      background: rgba(0,0,0,.58);
+      backdrop-filter: blur(5px);
+    }
+
+    .cart-open .cart-overlay { display: block; }
+
+    .cart-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 90;
+      width: min(100%, 430px);
+      height: 100svh;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(104%);
+      transition: transform .28s ease;
+      border-left: 1px solid var(--line);
+      background: rgba(13, 10, 8, .96);
+      box-shadow: -30px 0 80px rgba(0,0,0,.5);
+    }
+
+    .cart-open .cart-drawer { transform: translateX(0); }
+
+    .cart-head {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .cart-head h2 {
+      margin: 0;
+      font-family: Georgia, serif;
+      font-size: 1.7rem;
+    }
+
+    .close-cart {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      background: rgba(255,255,255,.04);
+      cursor: pointer;
+    }
+
+    .cart-items {
+      flex: 1;
+      overflow: auto;
+      padding: 10px 18px;
+    }
+
+    .cart-empty {
+      margin: 20px 0;
+      color: rgba(248,241,223,.65);
+      line-height: 1.5;
+    }
+
+    .cart-item {
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr);
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(248,220,158,.12);
+    }
+
+    .cart-item img {
+      width: 72px;
+      height: 86px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    .cart-item h3 {
+      margin: 0 0 5px;
+      font-size: 1rem;
+    }
+
+    .cart-item small {
+      color: var(--muted);
+    }
+
+    .qty {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .qty-controls {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px;
+    }
+
+    .qty-controls button {
+      width: 28px;
+      height: 28px;
+      border: 0;
+      border-radius: 50%;
+      color: var(--ink);
+      background: rgba(255,255,255,.08);
+      cursor: pointer;
+    }
+
+    .cart-foot {
+      padding: 18px;
+      border-top: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .form-grid input {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid rgba(248,220,158,.2);
+      border-radius: 8px;
+      padding: 0 12px;
+      color: var(--ink);
+      background: rgba(255,255,255,.045);
+      outline: 0;
+    }
+
+    .form-grid input:focus {
+      border-color: rgba(243,211,138,.58);
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      color: var(--gold-2);
+      font-size: 1.2rem;
+      font-weight: 950;
+    }
+
+    .checkout {
+      width: 100%;
+    }
+
+    .note {
+      margin: 10px 0 0;
+      color: rgba(248,241,223,.55);
+      font-size: .8rem;
+      line-height: 1.4;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      z-index: 120;
+      transform: translate(-50%, 90px);
+      opacity: 0;
+      max-width: min(92vw, 430px);
+      padding: 13px 16px;
+      border: 1px solid rgba(243,211,138,.35);
+      border-radius: 999px;
+      color: #130e08;
+      background: var(--gold-2);
+      box-shadow: 0 18px 44px rgba(0,0,0,.32);
+      font-weight: 900;
+      transition: opacity .24s ease, transform .24s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity .65s ease, transform .65s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1180px) {
+      .products { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 920px) {
+      .nav a:not(.cta) { display: none; }
+      .hero,
+      .split {
+        grid-template-columns: 1fr;
+      }
+      .showcase { min-height: 560px; }
+      .hero-card,
+      .hero-card img { min-height: 560px; height: 560px; }
+      .products { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .gallery { grid-template-columns: 1fr; }
+      .gallery-item.large { grid-row: auto; }
+      .testimonials { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .site-header { min-height: 66px; padding: 10px 14px; }
+      .brand-mark { width: 40px; font-size: 20px; }
+      .brand strong { font-size: .92rem; }
+      .brand span { font-size: .66rem; }
+      .header-cta { display: none; }
+      .hero { min-height: auto; padding-inline: 14px; }
+      h1 { font-size: clamp(2.72rem, 16vw, 4.4rem); }
+      .trust-row { grid-template-columns: 1fr; }
+      .showcase { min-height: 500px; }
+      .hero-card,
+      .hero-card img { min-height: 500px; height: 500px; }
+      .hero-caption {
+        left: 18px;
+        right: 18px;
+        bottom: 20px;
+        align-items: start;
+        flex-direction: column;
+      }
+      .section { padding-inline: 14px; }
+      .section-head { align-items: start; flex-direction: column; }
+      .products { grid-template-columns: 1fr; }
+      .photo { height: 420px; }
+      .site-footer { align-items: start; flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#inicio" aria-label="Elixir Club UY">
+      <div class="brand-mark">E</div>
+      <div>
+        <strong>Elixir</strong>
+        <span>Club.uy</span>
+      </div>
+    </a>
+    <nav class="nav" aria-label="Navegacion principal">
+      <a href="#catalogo">Perfumes</a>
+      <a href="#compra">Compra online</a>
+      <a href="#opiniones">Opiniones</a>
+      <a class="cta header-cta" href="#catalogo">Comprar ahora</a>
+      <button class="cart-button" type="button" data-open-cart aria-label="Abrir carrito">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6h15l-1.5 9h-13z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+        <span class="cart-count" data-cart-count>0</span>
+      </button>
+    </nav>
+  </header>
+
+  <main id="inicio">
+    <section class="hero">
+      <div class="reveal">
+        <div class="eyebrow">Perfumeria importada en Uruguay</div>
+        <h1>Tu proximo <span>elixir</span></h1>
+        <p>Fragancias arabes e importadas seleccionadas para regalar, impactar y dejar presencia. Ahora podes elegir, sumar al carrito y cerrar la compra online por WhatsApp.</p>
+        <div class="hero-actions">
+          <a class="cta" href="#catalogo">Ver catalogo</a>
+          <button class="ghost" type="button" data-open-cart>Ver carrito</button>
+        </div>
+        <div class="trust-row">
+          <div class="trust"><strong>Stock real</strong><span>Catalogo listo para consultar y reservar</span></div>
+          <div class="trust"><strong>UYU</strong><span>Precios claros en pesos uruguayos</span></div>
+          <div class="trust"><strong>Online</strong><span>Pedido armado directo por WhatsApp</span></div>
+        </div>
+      </div>
+
+      <div class="showcase reveal" aria-label="Perfume destacado">
+        <article class="hero-card">
+          <img src="assets/bahamas.png" alt="Oud For Glory Lattafa">
+          <div class="hero-caption">
+            <div>
+              <small>Best seller intenso</small>
+              <h2>Oud For Glory</h2>
+            </div>
+            <div class="price-pill">$ 2.490</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="catalogo">
+      <div class="section-head reveal">
+        <div>
+          <div class="eyebrow">Catalogo online</div>
+          <h2>Elegilo, sumalo y compralo.</h2>
+        </div>
+        <p>Fotos reales del Instagram, precios visibles y boton de compra en cada producto. Los precios son demo y se pueden ajustar al stock real.</p>
+      </div>
+
+      <div class="filters reveal" aria-label="Filtros de catalogo">
+        <button class="filter active" type="button" data-filter="all">Todos</button>
+        <button class="filter" type="button" data-filter="intenso">Intensos</button>
+        <button class="filter" type="button" data-filter="fresco">Frescos</button>
+        <button class="filter" type="button" data-filter="dulce">Dulces</button>
+        <button class="filter" type="button" data-filter="tropical">Tropicales</button>
+      </div>
+
+      <div class="products" data-products></div>
+    </section>
+
+    <section class="section split" id="compra">
+      <div class="reveal">
+        <div class="eyebrow">Compra online</div>
+        <h2>El carrito arma el pedido por vos.</h2>
+        <p class="lead">El cliente suma perfumes, deja nombre y direccion, y el sitio prepara un mensaje con productos, cantidades y total. Es ideal para vender por WhatsApp mientras se mantiene una experiencia de e-commerce.</p>
+        <div class="hero-actions">
+          <button class="cta" type="button" data-open-cart>Abrir carrito</button>
+          <a class="ghost" href="#catalogo">Seguir comprando</a>
+        </div>
+      </div>
+      <div class="checkout-steps reveal">
+        <div class="step"><strong>1</strong><div><h3>Elegir fragancia</h3><p>El catalogo muestra ocasion, estilo y precio para decidir sin vueltas.</p></div></div>
+        <div class="step"><strong>2</strong><div><h3>Sumar al carrito</h3><p>Cantidad, total y productos quedan guardados durante la visita.</p></div></div>
+        <div class="step"><strong>3</strong><div><h3>Confirmar por WhatsApp</h3><p>El pedido sale listo para coordinar pago, entrega y stock final.</p></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="lookbook">
+      <div class="section-head reveal">
+        <div>
+          <div class="eyebrow">Lookbook</div>
+          <h2>Visual premium para vender mas.</h2>
+        </div>
+        <p>La galeria usa transiciones sobre fotos reales para reforzar calidad, variedad y deseo de compra.</p>
+      </div>
+      <div class="gallery">
+        <div class="gallery-item large reveal"><img src="assets/odyssey-revolution.png" alt="Fakhar Gold Lattafa"><span>Lujo dorado para regalo premium</span></div>
+        <div class="gallery-item reveal"><img src="assets/fakhar-gold.png" alt="Odyssey Aoud"><span>Aoud metalico, elegante e intenso</span></div>
+        <div class="gallery-item reveal"><img src="assets/nine-pm-elixir.png" alt="Hayaas Ice"><span>Frescos para uso diario</span></div>
+      </div>
+    </section>
+
+    <section class="section" id="opiniones">
+      <div class="section-head reveal">
+        <div>
+          <div class="eyebrow">Confianza</div>
+          <h2>Compra con seguridad.</h2>
+        </div>
+        <p>Mensajes cortos y prueba social para que el visitante sienta que esta comprando en una tienda cuidada, no en una pagina improvisada.</p>
+      </div>
+      <div class="testimonials">
+        <article class="quote reveal"><p>"Me ayudaron a elegir un perfume para regalo y quedo excelente. Rapida la atencion."</p><strong>Cliente de Montevideo</strong></article>
+        <article class="quote reveal"><p>"El Oud tiene presencia de perfume caro. Lo use de noche y dura muchisimo."</p><strong>Compra verificada</strong></article>
+        <article class="quote reveal"><p>"Las fotos ayudan pila. Pedi por WhatsApp y ya sabia cual queria."</p><strong>Consulta por Instagram</strong></article>
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <div class="reveal">
+        <div class="eyebrow">Elixir Club.uy</div>
+        <h2>Compra tu perfume importado hoy.</h2>
+        <p class="lead">Suma tus favoritos al carrito y envia el pedido. Te respondemos para confirmar stock, metodo de pago y entrega.</p>
+        <button class="cta" type="button" data-open-cart>Finalizar compra</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div>Elixir Club.uy | Perfumes importados</div>
+    <div>Demo web con carrito y compra por WhatsApp</div>
+  </footer>
+
+  <div class="cart-overlay" data-close-cart></div>
+  <aside class="cart-drawer" aria-label="Carrito de compra" aria-hidden="true">
+    <div class="cart-head">
+      <h2>Tu pedido</h2>
+      <button class="close-cart" type="button" data-close-cart aria-label="Cerrar carrito">x</button>
+    </div>
+    <div class="cart-items" data-cart-items></div>
+    <div class="cart-foot">
+      <div class="form-grid">
+        <input data-customer-name type="text" placeholder="Nombre">
+        <input data-customer-address type="text" placeholder="Direccion o zona de entrega">
+      </div>
+      <div class="total-row"><span>Total</span><span data-cart-total>$ 0</span></div>
+      <button class="checkout" type="button" data-checkout>Comprar online por WhatsApp</button>
+      <p class="note">Demo: cambia el numero de WhatsApp en el codigo por el numero real de Elixir Club.uy.</p>
+    </div>
+  </aside>
+  <div class="toast" data-toast>Producto agregado al carrito</div>
+
+  <script>
+    const whatsappNumber = '59800000000';
+    const products = [
+      {
+        id: 'oud-for-glory',
+        name: 'Oud For Glory',
+        family: 'Intenso',
+        category: 'intenso',
+        description: 'Elegante, oscuro y poderoso. Para quienes buscan una firma olfativa premium.',
+        price: 2490,
+        image: 'assets/bahamas.png',
+        badge: 'Best seller'
+      },
+      {
+        id: 'odyssey-homme',
+        name: 'Odyssey Homme White',
+        family: 'Fresco formal',
+        category: 'fresco',
+        description: 'Limpio, masculino y pulido. Perfecto para oficina, dia y ocasiones formales.',
+        price: 2290,
+        image: 'assets/oud-for-glory.png',
+        badge: 'White edition'
+      },
+      {
+        id: 'fakhar-gold',
+        name: 'Fakhar Gold',
+        family: 'Dorado premium',
+        category: 'intenso',
+        description: 'Presentacion de lujo, ideal para regalo y para quienes aman perfumes con presencia.',
+        price: 2790,
+        image: 'assets/odyssey-revolution.png',
+        badge: 'Premium'
+      },
+      {
+        id: 'odyssey-aoud',
+        name: 'Odyssey Aoud',
+        family: 'Amaderado',
+        category: 'intenso',
+        description: 'Metalico, calido y sofisticado. Una opcion fuerte para noche y eventos.',
+        price: 2590,
+        image: 'assets/fakhar-gold.png',
+        badge: 'Aoud'
+      },
+      {
+        id: 'dubai-chocolat',
+        name: 'Dubai Chocolat',
+        family: 'Gourmand',
+        category: 'dulce',
+        description: 'Dulce, cremoso y llamativo. Para amantes de fragancias gourmand diferentes.',
+        price: 2390,
+        image: 'assets/odyssey-aoud.png',
+        badge: 'Nuevo'
+      },
+      {
+        id: 'bahamas',
+        name: 'Odyssey Bahamas',
+        family: 'Tropical',
+        category: 'tropical',
+        description: 'Vibrante y moderno, con energia tropical y una presencia divertida.',
+        price: 2190,
+        image: 'assets/go-mango.png',
+        badge: 'Tropical'
+      },
+      {
+        id: 'go-mango',
+        name: 'Odyssey Go Mango',
+        family: 'Tropical dulce',
+        category: 'tropical',
+        description: 'Dulce, jugoso y llamativo. Ideal para verano, salidas y regalos frescos.',
+        price: 2190,
+        image: 'assets/elixir-logo.png',
+        badge: 'Color'
+      },
+      {
+        id: 'hayaas-ice',
+        name: 'Hayaas Ice',
+        family: 'Fresco',
+        category: 'fresco',
+        description: 'Azul, limpio y versatil. Una compra facil para uso diario.',
+        price: 2290,
+        image: 'assets/nine-pm-elixir.png',
+        badge: 'Ice'
+      },
+      {
+        id: 'revolution',
+        name: 'Odyssey Revolution',
+        family: 'Masculino intenso',
+        category: 'intenso',
+        description: 'Negro, especiado y moderno. Buen impacto para noche o salida.',
+        price: 2450,
+        image: 'assets/hayaas-ice.png',
+        badge: 'Ultra'
+      }
+    ];
+
+    const formatter = new Intl.NumberFormat('es-UY', {
+      style: 'currency',
+      currency: 'UYU',
+      maximumFractionDigits: 0
+    });
+
+    const cart = new Map();
+    const productGrid = document.querySelector('[data-products]');
+    const cartItems = document.querySelector('[data-cart-items]');
+    const cartCount = document.querySelector('[data-cart-count]');
+    const cartTotal = document.querySelector('[data-cart-total]');
+    const drawer = document.querySelector('.cart-drawer');
+    const toast = document.querySelector('[data-toast]');
+
+    function money(value) {
+      return formatter.format(value).replace('UYU', '$');
+    }
+
+    function renderProducts(category = 'all') {
+      productGrid.innerHTML = products
+        .filter((product) => category === 'all' || product.category === category)
+        .map((product) => `
+          <article class="product reveal visible" data-category="${product.category}">
+            <div class="photo">
+              <span class="badge">${product.badge}</span>
+              <img src="${product.image}" alt="${product.name}">
+            </div>
+            <div class="product-info">
+              <small>${product.family}</small>
+              <h3>${product.name}</h3>
+              <p>${product.description}</p>
+              <div class="buy-row">
+                <span class="price">${money(product.price)}</span>
+                <button type="button" data-add="${product.id}">Agregar</button>
+              </div>
+            </div>
+          </article>
+        `).join('');
+    }
+
+    function renderCart() {
+      const entries = Array.from(cart.entries());
+      const totalQty = entries.reduce((sum, [, item]) => sum + item.qty, 0);
+      const total = entries.reduce((sum, [, item]) => sum + item.qty * item.product.price, 0);
+
+      cartCount.textContent = totalQty;
+      cartTotal.textContent = money(total);
+
+      if (!entries.length) {
+        cartItems.innerHTML = '<p class="cart-empty">Tu carrito esta vacio. Suma perfumes del catalogo para preparar el pedido.</p>';
+        return;
+      }
+
+      cartItems.innerHTML = entries.map(([id, item]) => `
+        <div class="cart-item">
+          <img src="${item.product.image}" alt="${item.product.name}">
+          <div>
+            <h3>${item.product.name}</h3>
+            <small>${money(item.product.price)} c/u</small>
+            <div class="qty">
+              <div class="qty-controls">
+                <button type="button" data-decrease="${id}" aria-label="Restar">-</button>
+                <strong>${item.qty}</strong>
+                <button type="button" data-increase="${id}" aria-label="Sumar">+</button>
+              </div>
+              <strong>${money(item.qty * item.product.price)}</strong>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function addToCart(id) {
+      const product = products.find((item) => item.id === id);
+      const current = cart.get(id);
+      cart.set(id, { product, qty: current ? current.qty + 1 : 1 });
+      renderCart();
+      showToast(`${product.name} agregado al carrito`);
+    }
+
+    function updateQty(id, direction) {
+      const current = cart.get(id);
+      if (!current) return;
+      const nextQty = current.qty + direction;
+      if (nextQty <= 0) cart.delete(id);
+      else cart.set(id, { ...current, qty: nextQty });
+      renderCart();
+    }
+
+    function openCart() {
+      document.body.classList.add('cart-open');
+      drawer.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeCart() {
+      document.body.classList.remove('cart-open');
+      drawer.setAttribute('aria-hidden', 'true');
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => toast.classList.remove('show'), 1800);
+    }
+
+    function checkout() {
+      const entries = Array.from(cart.values());
+      if (!entries.length) {
+        showToast('Primero agrega un perfume al carrito');
+        return;
+      }
+
+      const name = document.querySelector('[data-customer-name]').value.trim();
+      const address = document.querySelector('[data-customer-address]').value.trim();
+      const lines = entries.map((item) => `- ${item.qty} x ${item.product.name}: ${money(item.qty * item.product.price)}`);
+      const total = entries.reduce((sum, item) => sum + item.qty * item.product.price, 0);
+      const message = [
+        'Hola Elixir Club, quiero comprar:',
+        ...lines,
+        `Total: ${money(total)}`,
+        name ? `Nombre: ${name}` : '',
+        address ? `Entrega: ${address}` : '',
+        'Quedo atento/a para confirmar stock y pago.'
+      ].filter(Boolean).join('\n');
+
+      window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
+    }
+
+    renderProducts();
+    renderCart();
+
+    document.addEventListener('click', (event) => {
+      const addButton = event.target.closest('[data-add]');
+      const openButton = event.target.closest('[data-open-cart]');
+      const closeButton = event.target.closest('[data-close-cart]');
+      const increaseButton = event.target.closest('[data-increase]');
+      const decreaseButton = event.target.closest('[data-decrease]');
+      const filterButton = event.target.closest('[data-filter]');
+
+      if (addButton) addToCart(addButton.dataset.add);
+      if (openButton) openCart();
+      if (closeButton) closeCart();
+      if (increaseButton) updateQty(increaseButton.dataset.increase, 1);
+      if (decreaseButton) updateQty(decreaseButton.dataset.decrease, -1);
+      if (event.target.closest('[data-checkout]')) checkout();
+      if (filterButton) {
+        document.querySelectorAll('[data-filter]').forEach((button) => button.classList.remove('active'));
+        filterButton.classList.add('active');
+        renderProducts(filterButton.dataset.filter);
+      }
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: .15 });
+
+    document.querySelectorAll('.reveal').forEach((node, index) => {
+      node.style.transitionDelay = `${Math.min(index * 45, 260)}ms`;
+      observer.observe(node);
+    });
+  </script>
+</body>
+</html>
